@@ -1,7 +1,6 @@
 package com.britetonia.model;
 
 import jakarta.persistence.*;
-import jdk.jfr.Category;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,28 +8,28 @@ import lombok.NoArgsConstructor;
 
 import java.util.*;
 
-@Entity
 @Data
 @Builder
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 public class Product {
     @Id
     @GeneratedValue(
             strategy = GenerationType.AUTO,
-            generator = "product_id_sequence"
+            generator = "product_id"
     )
     @SequenceGenerator(
-            name = "product_id_sequence",
-            sequenceName = "product_id_sequence"
+            name = "product_id",
+            sequenceName = "product_id"
     )
-
-    private Long productId;
+    private long id;
     private String name;
     private String description;
     private String price;
-    private List images;
-    private String collectionName;
-    Category categoryId;
+    private String[] images;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
     private Date createdAt;
 }
