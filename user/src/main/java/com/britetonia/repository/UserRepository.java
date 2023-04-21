@@ -1,4 +1,4 @@
-package com.britetonia;
+package com.britetonia.repository;
 
 public interface UserRepository {
 }
