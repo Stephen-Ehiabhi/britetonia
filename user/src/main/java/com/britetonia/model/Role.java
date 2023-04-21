@@ -1,6 +1,6 @@
 package com.britetonia.model;
 
-public enum Roles {
+public enum Role {
     ADMIN,
     CUSTOMER
 }
