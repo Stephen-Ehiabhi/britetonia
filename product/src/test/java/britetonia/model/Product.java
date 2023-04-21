@@ -1,4 +1,4 @@
-package com.britetonia.model;
+package britetonia.model;
 
 import jakarta.persistence.*;
 import lombok.*;

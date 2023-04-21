@@ -1,9 +1,7 @@
-package com.britetonia.model;
+package britetonia.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.*;
 
 @Builder
 @Entity

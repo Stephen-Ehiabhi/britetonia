@@ -1,9 +1,7 @@
-package com.britetonia.model;
+package britetonia.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.*;
 
 @Builder
 @Entity
@@ -11,16 +9,20 @@ import java.util.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Category {
+public class Subcategory {
     @Id
     @SequenceGenerator(
-            name = "category_sequence",
-            sequenceName = "category_sequence"
+            name = "subcategory_sequence",
+            sequenceName = "subcategory_sequence"
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "category_sequence"
+            generator = "subcategory_sequence"
     )
     private Long id;
     private String name;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 }
+

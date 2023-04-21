@@ -1,29 +1,28 @@
 package com.britetonia.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
 @Builder
 @Entity
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Subcategory {
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.AUTO,
-            generator = "subcategory_id"
-    )
     @SequenceGenerator(
-            name = "subcategory_id",
-            sequenceName = "subcategory_id"
+            name = "subcategory_sequence",
+            sequenceName = "subcategory_sequence"
     )
-    private long id;
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "subcategory_sequence"
+    )
+    private Long id;
     private String name;
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 }
+
