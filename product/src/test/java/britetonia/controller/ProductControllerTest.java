@@ -7,7 +7,7 @@ public class ProductControllerTest {
 
 //   @Test
 //    void shouldCreateProduct(){
-//      ProductService productService = Mocikto.mock(ProductService.class);
+//      ProductServiceApplication productService = Mocikto.mock(ProductServiceApplication.class);
 //      when()
 //   }
 }
