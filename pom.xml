@@ -18,7 +18,8 @@
 	<modules>
 		<module>product</module>
 		<module>user</module>
-	</modules>
+        <module>inventory</module>
+    </modules>
 
 	<properties>
 		<java.version>17</java.version>

@@ -32,7 +32,6 @@ public class ProductController {
         return new ResponseEntity<>(productService.readProducts(), HttpStatus.OK);
     }
 
-    @GetMapping("{id}")
     public ResponseEntity<Optional<Product>> getProductController(@PathVariable("id") long id) {
         Optional<Product> product = productService.readProduct(id);
        if(product.isEmpty()){

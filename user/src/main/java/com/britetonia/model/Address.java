@@ -1,13 +1,11 @@
 package com.britetonia.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -20,8 +18,6 @@ public class Address {
 
     @Column(name = "address_line1", nullable = false)
     private String addressLine1;
-    @Column(name = "address_line2", nullable = false)
-    private String addressLine2;
     @Column(name = "city", nullable = false)
     private String city;
     @Column(name = "state_or_province", nullable = false)
