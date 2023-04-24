@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Builder
@@ -33,12 +34,12 @@ public class Product {
     private String description;
     @Column(name = "price", nullable = false)
     private BigDecimal price;
-    private String images;
-//    @ManyToOne
-//    @JoinColumn(name = "subcategory_id", nullable = false)
-//    private Subcategory subcategory;
+    private List<String> images;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Subcategory subcategory;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
 }

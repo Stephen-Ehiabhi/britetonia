@@ -1,7 +1,7 @@
-package com.fashion;
+package com.britetonia;
 
-import com.fashion.model.Inventory;
-import com.fashion.repository.InventoryRepository;
+import com.britetonia.model.Inventory;
+import com.britetonia.repository.InventoryRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

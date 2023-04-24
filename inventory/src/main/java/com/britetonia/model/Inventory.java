@@ -1,4 +1,4 @@
-package com.fashion.model;
+package com.britetonia.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -18,6 +18,7 @@ public class Inventory {
     @SequenceGenerator(name = "inventory_generator", sequenceName = "inventory_sequence")
     @Column(name = "id", insertable=false, updatable=false)
     private Long id;
+
     @Column(name = "sku_code", nullable = false)
     private String skuCode;
     @Column(name = "quantity", nullable = false)

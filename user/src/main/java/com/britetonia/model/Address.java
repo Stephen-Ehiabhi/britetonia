@@ -16,8 +16,8 @@ public class Address {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "address_line1", nullable = false)
-    private String addressLine1;
+    @Column(name = "address_line", nullable = false)
+    private String addressLine;
     @Column(name = "city", nullable = false)
     private String city;
     @Column(name = "state_or_province", nullable = false)

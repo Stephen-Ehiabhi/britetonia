@@ -4,10 +4,12 @@ import com.britetonia.Exceptions.UserAlreadyExistsException;
 import com.britetonia.Exceptions.UserNotFoundException;
 import com.britetonia.dto.UserRequest;
 import com.britetonia.dto.UserResponse;
-import com.britetonia.model.Role;
+import com.britetonia.model.Address;
 import com.britetonia.model.User0model;
+import com.britetonia.repository.AddressRepository;
 import com.britetonia.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,24 +18,32 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 @Transactional
 public class UserService {
 
     private final UserRepository userRepository;
+    private final AddressRepository addressRepository;
 
     public User0model registerUser(UserRequest userRequest) {
+
+        Address address = userRequest.getAddress();
+        addressRepository.save(address);
+
+
         User0model user = User0model.builder()
-                .id(userRequest.getId())
                 .name(userRequest.getName())
                 .email(userRequest.getEmail())
                 .phone(userRequest.getPhone())
-//                .address(userRequest.getAddress())
-//                .role(Role.CUSTOMER)
+                .address(address)
+                .role(userRequest.getRole())
                 .build();
 
-        if(userRepository.existsById(user.getId())){
-            throw new UserAlreadyExistsException("User with ID " + user.getId() + " already exists");
-        }
+        log.info(String.valueOf(user));
+
+//        if(userRepository.existsById(user.getId())){
+//            throw new UserAlreadyExistsException("User with ID " + user.getId() + " already exists");
+//        }
 
         return userRepository.save(user);
     }
@@ -53,40 +63,36 @@ public class UserService {
     }
 
     public UserResponse updateUser(long id, UserRequest userRequest) {
-        Optional<User0model> optionalUser = userRepository.findById(id);
+        User0model user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User with ID " + id + " not found"));
 
-//        if (optionalUser.isPresent()) {
-            User0model user = User0model.builder()
-                    .id(userRequest.getId())
-                    .name(userRequest.getName())
-                    .email(userRequest.getEmail())
-                    .phone(userRequest.getPhone())
-//                .address(userRequest.getAddress())
-//                .role(Role.CUSTOMER)
-                    .build();
-//            user.setAddress(userRequest.getAddress());
-//            user.setRole(userRequest.getRole());
+        user.setName(userRequest.getName());
+        user.setEmail(userRequest.getEmail());
+        user.setPhone(userRequest.getPhone());
+        user.setAddress(userRequest.getAddress());
+        user.setRole(userRequest.getRole());
 
-            return mapDataToUserResponse(userRepository.save(user));
+        userRepository.save(user);
+        return mapDataToUserResponse(user);
     }
 
+        //todo: an admin user perfrom CRUD on product
+        //todo: so a connection is needed to the product microservice
+
+    public UserResponse mapDataToUserResponse(User0model user) {
+        return UserResponse.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .address(user.getAddress())
+                .role(user.getRole())
+                .build();
+    }
 
     public void deleteUser(long id) {
         userRepository.deleteById(id);
     }
-
-   //todo: an admin user perfrom CRUD on product
-  //todo: so a connection is needed to the product microservice
-
-    private UserResponse mapDataToUserResponse(User0model user) {
-       return UserResponse.builder()
-               .id(user.getId())
-               .name(user.getName())
-               .email(user.getEmail())
-               .phone(user.getPhone())
-//               .address(user.getAddress())
-//               .role(user.getRole())
-               .build();
-    }
-
 }
+
+

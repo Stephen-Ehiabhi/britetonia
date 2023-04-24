@@ -1,6 +1,6 @@
-package com.fashion.controller;
+package com.britetonia.controller;
 
-import com.fashion.service.InventoryService;
+import com.britetonia.service.InventoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

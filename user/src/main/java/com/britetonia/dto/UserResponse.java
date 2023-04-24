@@ -1,21 +1,19 @@
 package com.britetonia.dto;
 
 import com.britetonia.model.Address;
-import com.britetonia.model.Role;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserResponse {
-    private Long id;
+    private long id;
     private String name;
     private String email;
     private String phone;
-//    private Address address;
-//    private Role role;
+    private Address address;
+    private String role;
+
+
 }

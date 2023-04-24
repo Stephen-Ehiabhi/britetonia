@@ -1,11 +1,9 @@
-package com.fashion.service;
+package com.britetonia.service;
 
-import com.fashion.repository.InventoryRepository;
+import com.britetonia.repository.InventoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
