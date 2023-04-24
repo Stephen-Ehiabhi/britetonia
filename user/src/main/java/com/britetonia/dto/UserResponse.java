@@ -4,6 +4,8 @@ import com.britetonia.model.Address;
 import lombok.*;
 
 @Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

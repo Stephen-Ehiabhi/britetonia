@@ -23,7 +23,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
-
     @Data
     public static class CustomErrorResponse {
         private int status;

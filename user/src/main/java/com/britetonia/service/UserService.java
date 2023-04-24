@@ -26,7 +26,6 @@ public class UserService {
     private final AddressRepository addressRepository;
 
     public User0model registerUser(UserRequest userRequest) {
-
         Address address = userRequest.getAddress();
         addressRepository.save(address);
 
@@ -39,11 +38,9 @@ public class UserService {
                 .role(userRequest.getRole())
                 .build();
 
-        log.info(String.valueOf(user));
-
-//        if(userRepository.existsById(user.getId())){
-//            throw new UserAlreadyExistsException("User with ID " + user.getId() + " already exists");
-//        }
+        if(userRepository.existsByName(user.getName())){
+            throw new UserAlreadyExistsException("User with name " + user.getName() + " already exists");
+        }
 
         return userRepository.save(user);
     }
@@ -66,13 +63,18 @@ public class UserService {
         User0model user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User with ID " + id + " not found"));
 
+        Address address = userRequest.getAddress();
+        address.setId(user.getId());
+        addressRepository.save(address);
+
         user.setName(userRequest.getName());
         user.setEmail(userRequest.getEmail());
         user.setPhone(userRequest.getPhone());
-        user.setAddress(userRequest.getAddress());
+        user.setAddress(address);
         user.setRole(userRequest.getRole());
 
         userRepository.save(user);
+
         return mapDataToUserResponse(user);
     }
 

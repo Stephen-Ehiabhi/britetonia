@@ -5,6 +5,7 @@ import com.britetonia.dto.UserResponse;
 import com.britetonia.model.User0model;
 import com.britetonia.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,12 +14,14 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/user")
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
 
     private final UserService userService;
 
     @PostMapping
     public ResponseEntity<User0model> registerUserController(@RequestBody UserRequest userRequest){
+        log.info(String.valueOf("POst--------------" + userRequest));
         return new ResponseEntity<>( userService.registerUser(userRequest), HttpStatus.CREATED);
     }
 
@@ -33,7 +36,8 @@ public class UserController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<UserResponse> updateUserController(@PathVariable("id") long id, UserRequest userRequest){
+    public ResponseEntity<UserResponse> updateUserController(@PathVariable("id") long id, @RequestBody UserRequest userRequest){
+        log.info(String.valueOf("--------------" + userRequest));
         return new ResponseEntity<>( userService.updateUser(id, userRequest), HttpStatus.CREATED);
     }
 

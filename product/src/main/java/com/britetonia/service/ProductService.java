@@ -53,12 +53,10 @@ public class ProductService {
 
 
     public ProductResponse updateProduct (Long id, ProductRequest productRequest){
-        if(!productRepository.existsById(id)) {
-            throw new ProductNotFoundException("Product with id " + id + " Not found");
-        }else{
-            Product product = new Product();
+       Product product = productRepository.findById(id)
+                .orElseThrow(()-> new ProductNotFoundException("Product with id " + id + " Not found"));
 
-            product.setId(id);
+//            product.setId(id);
             product.setName(productRequest.getName());
             product.setDescription(productRequest.getDescription());
             product.setPrice(productRequest.getPrice());
