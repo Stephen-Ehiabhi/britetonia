@@ -78,8 +78,8 @@ public class UserService {
         return mapDataToUserResponse(user);
     }
 
-        //todo: an admin user perfrom CRUD on product
-        //todo: so a connection is needed to the product microservice
+    //todo: an admin user perform CRUD on product
+    //todo: so a connection is needed to the product microservice
 
     public UserResponse mapDataToUserResponse(User0model user) {
         return UserResponse.builder()
