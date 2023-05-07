@@ -4,8 +4,6 @@ import com.britetonia.model.Address;
 import lombok.*;
 
 @Data
-@Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,7 +13,5 @@ public class UserResponse {
     private String email;
     private String phone;
     private Address address;
-    private String role;
-
-
+    private String token;
 }

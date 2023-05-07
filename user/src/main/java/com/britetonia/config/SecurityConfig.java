@@ -27,7 +27,8 @@ public class SecurityConfig {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("")
+                //routes to remove from authentication
+                .requestMatchers("/api/v1/user/auth/*")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

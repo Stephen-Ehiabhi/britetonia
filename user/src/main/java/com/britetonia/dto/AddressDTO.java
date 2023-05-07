@@ -3,8 +3,6 @@ package com.britetonia.dto;
 import lombok.*;
 
 @Data
-@Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

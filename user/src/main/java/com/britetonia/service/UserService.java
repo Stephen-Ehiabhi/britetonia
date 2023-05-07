@@ -2,6 +2,7 @@ package com.britetonia.service;
 
 import com.britetonia.Exceptions.UserAlreadyExistsException;
 import com.britetonia.Exceptions.UserNotFoundException;
+import com.britetonia.config.JwtService;
 import com.britetonia.dto.UserRequest;
 import com.britetonia.dto.UserResponse;
 import com.britetonia.model.Address;
@@ -12,8 +13,9 @@ import com.britetonia.repository.UserRepository;
 import com.britetonia.stripe.StripeCrudService;
 import com.stripe.exception.StripeException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,24 +24,27 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 @Transactional
 public class UserService {
 
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
     private final StripeCrudService stripeCRUD;
 
-    public User registerUser(UserRequest userRequest) throws StripeException {
-        Address address = userRequest.getAddress();
+    public UserResponse registerUser(UserRequest request) throws StripeException {
+        Address address = request.getAddress();
         addressRepository.save(address);
 
         User user = User.builder()
-                .name(userRequest.getName())
-                .email(userRequest.getEmail())
-                .phone(userRequest.getPhone())
+                .name(request.getName())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .phone(request.getPhone())
                 .address(address)
-                .role(Role.valueOf(userRequest.getRole()))
+                .role(Role.USER)
                 .build();
 
         String customerID = stripeCRUD.addCustomer(user);
@@ -50,7 +55,37 @@ public class UserService {
             throw new UserAlreadyExistsException("User with name " + user.getName() + " already exists");
         }
 
-        return userRepository.save(user);
+        userRepository.save(user);
+
+        //generate jwt token, and return it
+        var jwtToken = jwtService.generateToken(user);
+
+        //return the token to the response
+        return UserResponse.builder()
+                .token(jwtToken)
+                .build();
+    }
+
+    public UserResponse loginUser(UserRequest request) {
+        //check if user exists
+        var user = userRepository
+                .findByEmail(request.getEmail())
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        //check if username and password is correct
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(), request.getPassword()
+                )
+        );
+
+        //generate jwt token, and return it
+        var jwtToken = jwtService.generateToken(user);
+
+        //return the token to the response
+        return UserResponse.builder()
+                .token(jwtToken)
+                .build();
     }
 
 
@@ -80,7 +115,7 @@ public class UserService {
         user.setEmail(userRequest.getEmail());
         user.setPhone(userRequest.getPhone());
         user.setAddress(address);
-        user.setRole(Role.valueOf(userRequest.getRole()));
+        //  user.setRole(Role.valueOf(userRequest.getRole()));
 
         // update in stripe
         stripeCRUD.update(id, user);
@@ -108,8 +143,8 @@ public class UserService {
                 .email(user.getEmail())
                 .phone(user.getPhone())
                 .address(user.getAddress())
-                .role(String.valueOf(user.getRole()))
                 .build();
     }
+
 
 }

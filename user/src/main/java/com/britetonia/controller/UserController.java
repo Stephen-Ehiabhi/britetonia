@@ -21,9 +21,14 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping
-    public ResponseEntity<User> registerUserController(@RequestBody UserRequest userRequest) throws StripeException {
+    @PostMapping("/auth/register")
+    public ResponseEntity<UserResponse> registerUserController(@RequestBody UserRequest userRequest) throws StripeException {
         return new ResponseEntity<>(userService.registerUser(userRequest), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/auth/login")
+    public ResponseEntity<UserResponse> loginUserController(@RequestBody UserRequest UserRequest) throws StripeException {
+        return new ResponseEntity<>(userService.loginUser(UserRequest), HttpStatus.CREATED);
     }
 
     @GetMapping
