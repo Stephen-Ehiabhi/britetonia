@@ -5,9 +5,11 @@ import com.britetonia.repository.InventoryRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
+@EnableEurekaClient
 public class InventoryServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(InventoryServiceApplication.class, args);
@@ -17,12 +19,12 @@ public class InventoryServiceApplication {
     public CommandLineRunner loadData(InventoryRepository inventoryRepository){
       return args -> {
           Inventory inventory = new Inventory();
-          inventory.setSkuCode("Amaka Evening Gown");
+          inventory.setProductName("Amaka Evening Gown");
           inventory.setQuantity(22);
 
           Inventory inventory1 = new Inventory();
-          inventory1.setSkuCode("Grace morning Gown");
-          inventory1.setQuantity(14);
+          inventory1.setProductName("Grace morning Gown");
+          inventory1.setQuantity(0);
 
           inventoryRepository.save(inventory);
           inventoryRepository.save(inventory1);

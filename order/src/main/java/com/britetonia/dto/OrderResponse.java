@@ -7,5 +7,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderResponse {
-    private List<OrderLineItemsDTO> orderLineItemsDTO;
+    private String price;
+    private String productId;
+    private String name;
+    private String deliveryDate;
+    private String customerEmail;
 };

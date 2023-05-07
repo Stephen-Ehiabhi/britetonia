@@ -1,63 +1,97 @@
 package com.britetonia.service;
 
-import com.britetonia.model.Order;
 import com.britetonia.Exceptions.InternalServerErrorException;
-import com.britetonia.Exceptions.OrderAlreadyExistsException;
+import com.britetonia.Exceptions.OrderNotFoundException;
+//import com.britetonia.StripeCRUD;
+import com.britetonia.dto.InventoryResponse;
 import com.britetonia.dto.OrderLineItemsDTO;
 import com.britetonia.dto.OrderRequest;
+import com.britetonia.model.Order;
 import com.britetonia.model.OrderLineItems;
 import com.britetonia.repository.OrderRepository;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
-@Slf4j
 public class OrderService {
 
     private final OrderRepository orderRepository;
+//    private final StripeCRUD stripeCRUD;
+    private final WebClient webClient;
 
-    public Order placeAnOrder(OrderRequest orderRequest) {
+    public void placeAnOrder(OrderRequest orderRequest) {
+        try {
             Order order = new Order();
-            order.setOrderNumber(generateId());
+            //generate random id
+            order.setOrderNumber(UUID.randomUUID().toString());
 
-            List<OrderLineItems> orderLineItems = orderRequest
-                       .getOrderLineItemsDTO()
-                       .stream()
-                       .map(this::mapToDto)
-                       .toList();
+            //update the orderlinetimes
+            List<OrderLineItems> orderLineItems = orderRequest.getOrderLineItems()
+                    .stream()
+                    .map(this::mapToListDTO)
+                    .toList();
 
             order.setOrderLineItems(orderLineItems);
 
-//        if(orderRepository.existsById(orderLineItems.)){
-//            throw new OrderAlreadyExistsException("User with id" + order.getId() + "not Found");
-//        }else{
-//
-      log.info(String.valueOf(order));
-//
-      return orderRepository.save(order);
-//            }
+            //get all the product names and store in a list
+            List<String> productNames = orderRequest.getOrderLineItems()
+                    .stream()
+                    .map(OrderLineItemsDTO::getProductName)
+                    .toList();
+
+            //call inventory service, to check if item is in stock
+            InventoryResponse[] inventoryResponsesArray = webClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .host("http://localhost")
+                            .port("8082")
+                            .path("/api/v1/inventory")
+                            .queryParam("productName", productNames)
+                            .build()
+                    )
+                    .retrieve()
+                    .bodyToMono(InventoryResponse[].class)
+                    .block();
+
+            assert inventoryResponsesArray != null;
+
+            //check that all products are in stock if one is false, it'll throw, false.
+            boolean allProductsInStock = Arrays
+                    .stream(inventoryResponsesArray)
+                    .allMatch(InventoryResponse::getIsInStock);
+
+            //check if product is in inventory stock
+            if (allProductsInStock) {
+//                stripeCRUD.chargeCard(orderRequest);
+                orderRepository.save(order);
+            } else {
+                throw new OrderNotFoundException("Product is no longer in stock");
+            }
+        } catch (Exception e) {
+            throw new InternalServerErrorException("Error: " + e.getMessage());
+        }
     }
 
-    private OrderLineItems mapToDto(OrderLineItemsDTO orderLineItemsDTO) {
-        OrderLineItems orderLineItems = new OrderLineItems();
-        orderLineItems.setPrice(orderLineItemsDTO.getPrice());
-        orderLineItems.setQuantity(orderLineItemsDTO.getQuantity());
-        orderLineItems.setSkuCode(orderLineItemsDTO.getSkuCode());
-        return orderLineItems;
+    private OrderLineItems mapToListDTO(OrderLineItemsDTO orderLineItemsDTO) {
+        return OrderLineItems.builder()
+                .productId(orderLineItemsDTO.getProductId())
+                .quantity(orderLineItemsDTO.getQuantity())
+                .price(orderLineItemsDTO.getPrice())
+                .customerId(orderLineItemsDTO.getCustomerId())
+                .productName(orderLineItemsDTO.getProductName())
+                .build();
     }
 
-    //generate brite id for the order
-    public String generateId() {
-        String id = "brite" + String.format("%07d", new Random().nextInt(10000000));
+    public String generateOrderId() {
+        String id = "brite_order" + String.format("%07d", new Random().nextInt(10000000));
         return id;
     }
 }

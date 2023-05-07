@@ -1,6 +1,5 @@
 package com.britetonia.dto;
 
-import jakarta.persistence.Column;
 import lombok.*;
 
 @Data

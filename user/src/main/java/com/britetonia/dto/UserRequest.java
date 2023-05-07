@@ -1,7 +1,6 @@
 package com.britetonia.dto;
 
 import com.britetonia.model.Address;
-
 import lombok.*;
 
 @Data

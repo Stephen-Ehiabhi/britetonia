@@ -2,11 +2,13 @@ package com.britetonia.controller;
 
 import com.britetonia.dto.UserRequest;
 import com.britetonia.dto.UserResponse;
-import com.britetonia.model.User0model;
+import com.britetonia.model.User;
 import com.britetonia.service.UserService;
+import com.stripe.exception.StripeException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,31 +22,29 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<User0model> registerUserController(@RequestBody UserRequest userRequest){
-        log.info(String.valueOf("POst--------------" + userRequest));
-        return new ResponseEntity<>( userService.registerUser(userRequest), HttpStatus.CREATED);
+    public ResponseEntity<User> registerUserController(@RequestBody UserRequest userRequest) throws StripeException {
+        return new ResponseEntity<>(userService.registerUser(userRequest), HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<UserResponse>> getUsersController(){
-        return new ResponseEntity<>( userService.getUsers(), HttpStatus.OK);
+    public ResponseEntity<List<UserResponse>> getUsersController() {
+        return new ResponseEntity<>(userService.getUsers(), HttpStatus.OK);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<UserResponse> getUserController(@PathVariable("id") long id){
-        return new ResponseEntity<>( userService.getUser(id), HttpStatus.CREATED);
+    public ResponseEntity<UserResponse> getUserController(@PathVariable("id") long id) {
+        return new ResponseEntity<>(userService.getUser(id), HttpStatus.CREATED);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<UserResponse> updateUserController(@PathVariable("id") long id, @RequestBody UserRequest userRequest){
-        log.info(String.valueOf("--------------" + userRequest));
-        return new ResponseEntity<>( userService.updateUser(id, userRequest), HttpStatus.CREATED);
+    public ResponseEntity<UserResponse> updateUserController(@PathVariable("id") long id, @RequestBody UserRequest userRequest) throws StripeException {
+        return new ResponseEntity<>(userService.updateUser(id, userRequest), HttpStatus.CREATED);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteUserController(@PathVariable("id") long id){
+    public ResponseEntity<String> deleteUserController(@PathVariable("id") long id) throws StripeException {
         userService.deleteUser(id);
-        return new ResponseEntity<>( "User deleted", HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>("User deleted", HttpStatus.NO_CONTENT);
     }
 
 }

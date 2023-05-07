@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "product")
-public class Product {
+public class ProductModel {
     @Id
     @SequenceGenerator(
             name = "product_sequence",
@@ -27,7 +27,8 @@ public class Product {
     )
     @Column(name = "id", updatable = false)
     private Long id;
-
+    private String productId;
+    private String priceId;
     @Column(name = "name", nullable = false)
     private String name;
     @Column(name = "description", nullable = false)
@@ -37,6 +38,8 @@ public class Product {
     private List<String> images;
     @ManyToOne(cascade = CascadeType.ALL)
     private Subcategory subcategory;
+    @Column(name = "in_stock")
+    private Boolean inStock = true; // default data
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Column(name = "updated_at")

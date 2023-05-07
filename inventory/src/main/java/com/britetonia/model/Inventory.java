@@ -19,8 +19,8 @@ public class Inventory {
     @Column(name = "id", insertable=false, updatable=false)
     private Long id;
 
-    @Column(name = "sku_code", nullable = false)
-    private String skuCode;
+    @Column(name = "productName", nullable = false)
+    private String productName;
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 }

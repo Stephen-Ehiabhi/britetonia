@@ -1,10 +1,13 @@
 package com.britetonia.repository;
 
-import com.britetonia.model.User0model;
+import com.britetonia.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
-public interface UserRepository extends JpaRepository<User0model, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByName(String name);
+    Optional<User> findByEmail(String email);
 }

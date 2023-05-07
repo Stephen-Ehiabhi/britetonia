@@ -1,10 +1,8 @@
 package com.britetonia.controller;
 
-import com.britetonia.model.Order;
-import com.britetonia.Exceptions.InternalServerErrorException;
 import com.britetonia.dto.OrderRequest;
 import com.britetonia.service.OrderService;
-import lombok.AllArgsConstructor;
+import com.stripe.exception.StripeException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,8 +21,8 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<Order> placeOrder(@RequestBody OrderRequest orderRequest){
-
-        return new ResponseEntity<>(orderService.placeAnOrder(orderRequest), HttpStatus.CREATED);
+    public ResponseEntity<String> placeOrder(@RequestBody OrderRequest orderRequest) throws StripeException {
+        orderService.placeAnOrder(orderRequest);
+        return new ResponseEntity<>("Order placed successfully", HttpStatus.CREATED);
     }
 }
