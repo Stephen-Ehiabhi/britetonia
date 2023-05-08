@@ -10,7 +10,7 @@ import com.britetonia.model.Role;
 import com.britetonia.model.User;
 import com.britetonia.repository.AddressRepository;
 import com.britetonia.repository.UserRepository;
-import com.britetonia.stripe.StripeCrudService;
+//import com.britetonia.stripe.StripeCrudService;
 import com.stripe.exception.StripeException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,9 +32,9 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    private final StripeCrudService stripeCRUD;
+//    private final StripeCrudService stripeCRUD;
 
-    public UserResponse registerUser(UserRequest request) throws StripeException {
+    public UserResponse registerUser(UserRequest request) {
         Address address = request.getAddress();
         addressRepository.save(address);
 
@@ -47,9 +47,9 @@ public class UserService {
                 .role(Role.USER)
                 .build();
 
-        String customerID = stripeCRUD.addCustomer(user);
-
-        user.setCustomerId(customerID);
+//        String customerID = stripeCRUD.addCustomer(user);
+//
+//        user.setCustomerId(customerID);
 
         if (userRepository.existsByName(user.getName())) {
             throw new UserAlreadyExistsException("User with name " + user.getName() + " already exists");
@@ -103,7 +103,7 @@ public class UserService {
         }
     }
 
-    public UserResponse updateUser(long id, UserRequest userRequest) throws StripeException {
+    public UserResponse updateUser(long id, UserRequest userRequest) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User with ID " + id + " not found"));
 
@@ -118,7 +118,7 @@ public class UserService {
         //  user.setRole(Role.valueOf(userRequest.getRole()));
 
         // update in stripe
-        stripeCRUD.update(id, user);
+//        stripeCRUD.update(id, user);
 
         userRepository.save(user);
 
@@ -128,9 +128,9 @@ public class UserService {
     //todo: an admin user perform CRUD on product
     //todo: so a connection is needed to the product microservice
 
-    public void deleteUser(long id) throws StripeException {
+    public void deleteUser(long id) {
         // delete in stripe
-        stripeCRUD.delete(id);
+//        stripeCRUD.delete(id);
         userRepository.deleteById(id);
     }
 
