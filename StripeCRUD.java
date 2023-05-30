@@ -18,7 +18,7 @@ import java.util.Map;
 public class StripeCRUD {
     public void chargeCard(OrderRequest orderRequest) {
         try {
-            Stripe.apiKey = "sk_test_4eC39HqLyjWDarjtT1zdp7dc";
+            Stripe.apiKey = "";
 
             Map<String, Object> retrieveParams =
                     new HashMap<>();
